@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Chapter 2 – Probability</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --card:rgba(255,255,255,0.08);
+  --border:rgba(255,255,255,0.18);
+  --blue:#38bdf8;
+  --violet:#a78bfa;
+  --pink:#f472b6;
+  --text:#e5e7eb;
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;height:100%;}
+
+body{
+  font-family:'Poppins',sans-serif;
+  background:#020617;
+  color:var(--text);
+}
+
+/* Background */
+canvas{
+  position:fixed;
+  inset:0;
+  z-index:-2;
+}
+.bg-overlay{
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(56,189,248,.10), transparent 55%),
+    radial-gradient(circle at 85% 75%, rgba(167,139,250,.10), transparent 55%);
+  z-index:-1;
+}
+
+/* Content */
+section{
+  max-width:1200px;
+  margin:auto;
+  padding:70px 25px;
+}
+
+h2{
+  text-align:center;
+  font-size:46px;
+  margin-bottom:60px;
+  background:linear-gradient(90deg,var(--blue),var(--violet),var(--pink));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.card{
+  background:var(--card);
+  backdrop-filter:blur(16px);
+  border:1px solid var(--border);
+  border-radius:22px;
+  padding:40px;
+  margin-bottom:45px;
+}
+
+.card h3{
+  font-size:28px;
+  margin-bottom:15px;
+}
+
+p,li{
+  line-height:1.8;
+  color:#dbeafe;
+}
+
+details{
+  margin-top:18px;
+  background:rgba(255,255,255,.07);
+  padding:16px 20px;
+  border-radius:14px;
+}
+
+summary{
+  cursor:pointer;
+  font-weight:600;
+  color:var(--blue);
+}
+
+.formula{
+  margin-top:10px;
+  padding:10px 14px;
+  background:rgba(56,189,248,.15);
+  border-radius:10px;
+  display:inline-block;
+  font-weight:600;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="bg"></canvas>
+<div class="bg-overlay"></div>
+
+<section>
+<h2>Chapter 2 – Probability</h2>
+
+<div class="card">
+<h3>What is Probability?</h3>
+<p>Probability measures uncertainty and always lies between 0 and 1.</p>
+<ul>
+<li>0 → Impossible event</li>
+<li>1 → Certain event</li>
+</ul>
+<details>
+<summary>Formula</summary>
+<div class="formula">P(E) = Favourable outcomes / Total outcomes</div>
+</details>
+</div>
+
+<div class="card">
+<h3>Sample Space and Event</h3>
+<p>The sample space (S) is the set of all possible outcomes.</p>
+<details>
+<summary>Example</summary>
+<p>Tossing a coin: S = {H, T}</p>
+</details>
+</div>
+
+<div class="card">
+<h3>Equally Likely Events</h3>
+<p>All outcomes have equal chance of occurring.</p>
+<details>
+<summary>Example</summary>
+<p>Fair letter die → Probability of each letter = 1/6</p>
+</details>
+</div>
+
+<div class="card">
+<h3>Complementary Events</h3>
+<details>
+<summary>Formula</summary>
+<div class="formula">P(A′) = 1 − P(A)</div>
+</details>
+</div>
+
+<div class="card">
+<h3>Mutually Exclusive Events</h3>
+<details>
+<summary>Formula</summary>
+<div class="formula">P(A ∪ B) = P(A) + P(B)</div>
+</details>
+</div>
+
+<div class="card">
+<h3>Independent Events</h3>
+<details>
+<summary>Formula</summary>
+<div class="formula">P(A ∩ B) = P(A) × P(B)</div>
+</details>
+</div>
+
+<div class="card">
+<h3>Dependent Events</h3>
+<details>
+<summary>Formula</summary>
+<div class="formula">P(A ∩ B) = P(A) × P(B|A)</div>
+</details>
+</div>
+
+<div class="card">
+<h3>Conditional Probability</h3>
+<details>
+<summary>Formula</summary>
+<div class="formula">P(A|B) = P(A ∩ B) / P(B)</div>
+</details>
+</div>
+
+<div class="card">
+<h3>Bayes’ Theorem</h3>
+<details>
+<summary>Formula</summary>
+<div class="formula">P(A|B) = [P(B|A) × P(A)] / P(B)</div>
+</details>
+</div>
+
+<div class="card">
+<h3>Applications</h3>
+<ul>
+<li>Weather forecasting</li>
+<li>Medical diagnosis</li>
+<li>Machine learning</li>
+<li>Finance</li>
+</ul>
+</div>
+
+</section>
+
+<script>
+const c=document.getElementById("bg"),x=c.getContext("2d");
+function resize(){c.width=innerWidth;c.height=innerHeight}
+resize();addEventListener("resize",resize);
+
+let p=[...Array(70)].map(()=>({
+  x:Math.random()*c.width,
+  y:Math.random()*c.height,
+  vx:(Math.random()-.5)*0.3,
+  vy:(Math.random()-.5)*0.3
+}));
+
+function animate(){
+  x.clearRect(0,0,c.width,c.height);
+  for(let i=0;i<p.length;i++){
+    for(let j=i+1;j<p.length;j++){
+      let d=Math.hypot(p[i].x-p[j].x,p[i].y-p[j].y);
+      if(d<120){
+        x.strokeStyle="rgba(150,170,255,.12)";
+        x.beginPath();
+        x.moveTo(p[i].x,p[i].y);
+        x.lineTo(p[j].x,p[j].y);
+        x.stroke();
+      }
+    }
+  }
+  p.forEach(o=>{
+    o.x+=o.vx;o.y+=o.vy;
+    if(o.x<0||o.x>c.width)o.vx*=-1;
+    if(o.y<0||o.y>c.height)o.vy*=-1;
+    x.fillStyle="rgba(210,220,255,.6)";
+    x.beginPath();
+    x.arc(o.x,o.y,2,0,Math.PI*2);
+    x.fill();
+  });
+  requestAnimationFrame(animate);
+}
+animate();
+</script>
+
+</body>
+</html>
